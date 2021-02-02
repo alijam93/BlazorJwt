@@ -1,2 +1,8 @@
 # BlazorJwt
-ASP.NET Core Blazor JWT token authentication  with refresh token
+BlazorJwt is Demo app build with Blazor in client-side
+and Asp core api secured by JWT token.
+
+# Features
+* JWT token refresh token
+* Policy-base authentication
+* Using HTTP Interceptor in blazor
