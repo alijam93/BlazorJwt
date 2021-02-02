@@ -1,0 +1,65 @@
+﻿@page "/login"
+@inject IAuthService AuthService
+@inject NavigationManager UriHelper
+@using BlazorJwt.Shared.DTOs
+
+<div class="row justify-content-center">
+
+    <div class="col-md-8 col-10 pt-4">
+
+        <h1 class="text-secondary">Login</h1>
+        <div class="card shadow">
+            @if (ShowErrors)
+            {
+                <div class="alert alert-danger" role="alert">
+                    <p>@Error</p>
+                </div>
+            }
+            <div class="card-body">
+                <EditForm Model="loginDTO" OnValidSubmit="@HandleLogin">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="form-group">
+                        <label for="email">Email Or User name</label>
+                        <InputText Id="email" Class="form-control" @bind-Value="@loginDTO.EmailOrName" />
+                        <ValidationMessage For="@(() => loginDTO.EmailOrName)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <InputText Id="password" type="password" Class="form-control" @bind-Value="@loginDTO.Password" />
+                        <ValidationMessage For="@(() => loginDTO.Password)" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </EditForm>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@code {
+
+    private LoginDTO loginDTO = new();
+    private bool ShowErrors;
+    private string Error = "";
+
+    private async Task HandleLogin()
+    {
+        ShowErrors = false;
+
+        var result = await AuthService.Login(loginDTO);
+
+        if (result.IsSuccessful)
+        {
+            UriHelper.NavigateTo("/");
+        }
+        else
+        {
+            Error = result.ErrorMessage;
+            ShowErrors = true;
+        }
+    }
+
+}

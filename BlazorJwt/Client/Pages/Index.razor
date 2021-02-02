@@ -1,0 +1,10 @@
+﻿@page "/"
+@using BlazorJwt.Shared
+
+<AuthorizeView Policy="@Policies.IsUser">
+    <p>You have "User" policy.</p>
+</AuthorizeView>
+
+<AuthorizeView Policy="@Policies.IsAdmin">
+    <p>You have "Admin" policy.</p>
+</AuthorizeView>

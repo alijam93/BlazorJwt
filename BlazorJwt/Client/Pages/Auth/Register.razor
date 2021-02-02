@@ -1,0 +1,78 @@
+﻿@page "/register"
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+@inject HttpClient http
+@using BlazorJwt.Shared.DTOs
+
+<div class="row justify-content-center">
+
+    <div class="col-md-8 col-10 pt-4">
+
+        <h1 class="text-secondary">Register</h1>
+        <div class="card shadow">
+
+            @if (ShowErrors)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @foreach (var error in Errors)
+                    {
+                        <p>@error</p>
+                    }
+                </div>
+            }
+            <div class="card-body">
+                <EditForm Model="registerDTO" OnValidSubmit="HandleRegistration">
+                    <DataAnnotationsValidator />
+
+                    <div class="form-group">
+                        <label for="username">User Name</label>
+                        <InputText Id="username" class="form-control" @bind-Value="registerDTO.UserName" />
+                        <ValidationMessage For="@(() => registerDTO.UserName)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="email2">Email</label>
+                        <InputText Id="email2" type="email" class="form-control" @bind-Value="registerDTO.Email" />
+                        <ValidationMessage For="@(() => registerDTO.Email)" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password1">Password</label>
+                        <InputText Id="password1" type="password" class="form-control" @bind-Value="registerDTO.Password" />
+                        <ValidationMessage For="@(() => registerDTO.Password)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="password2">Confirm Password</label>
+                        <InputText Id="password2" type="password" class="form-control" @bind-Value="registerDTO.ConfirmPassword" />
+                        <ValidationMessage For="@(() => registerDTO.ConfirmPassword)" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </EditForm>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+
+    private RegisterDTO registerDTO = new();
+    private bool ShowErrors = false;
+    private IEnumerable<string> Errors;
+
+
+    private async Task HandleRegistration()
+    {
+        var result = await AuthService.Register(registerDTO);
+
+        if (result.Successful)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            Errors = result.Errors;
+            ShowErrors = true;
+        }
+    }
+
+}
